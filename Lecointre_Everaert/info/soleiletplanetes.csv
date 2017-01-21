@@ -1,0 +1,11 @@
+Objet;Rayon (km);Distance Objet/Soleil (km);Nombre de satellites
+Soleil;696342;;
+Mercure;2439,7;57910000;0
+Vénus;6051,8;108200000;0
+Terre;6371,008;149600000;1
+Mars;3389,5;227900000;2
+Jupiter;69911;778500000;67
+Saturne;58232;1429000000;62
+Uranus;25559;2871000000;27
+Neptune;24622;4498000000;14
+Pluton;1185;5906380000;5

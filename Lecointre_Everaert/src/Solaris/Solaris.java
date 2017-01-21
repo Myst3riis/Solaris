@@ -110,6 +110,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(mercuryID);
+		
 		// VENUS
 		gl.glLoadIdentity();
 		gl.glRotatef((float)3.5*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
@@ -124,16 +125,16 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(earthID);
+		
 		/*
 		// MOON
 		gl.glLoadIdentity();
 		gl.glRotatef(object_angle, 0, 0, 1);
 		gl.glRotatef(-15.f, 0, 1, 0);
 		gl.glTranslatef(0.0f, 0.0f, -15.0f);
-
 		gl.glRotatef(object_angle, 1, 1, 1);
 		gl.glCallList(moonID);
-		 */
+		*/
 		
 		// MARS
 		gl.glLoadIdentity();
