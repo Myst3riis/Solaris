@@ -4,6 +4,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -29,7 +32,8 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 
 	private float object_angle = 0.0f;
 	
-	private float zoomFactor = 1f;
+	private float sizeFactor = 1f;
+	private float distanceFactor = 0.1f;
 
 	private float eyeX = 0;
 	private float eyeY = 0;
@@ -42,6 +46,8 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	private float lx = 0;
 	private float lz = -1;
 
+	private int moveSpeed = 1;
+	
 	private GLU glu = new GLU();
 
 	private int sunID;
@@ -57,6 +63,8 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	private int uranusRingID;
 	private int neptuneID;
 	private int neptuneRingID;
+	private List<Integer> asteroidIDs = new ArrayList<Integer>();
+	private int nbAsteroids = 100;
 	
 	public Solaris(int width, int height)
 	{
@@ -79,13 +87,16 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		canvas.requestFocusInWindow();
 
 		// Creation et instanciation du FPSAnimator
-		final FPSAnimator animator = new FPSAnimator(canvas, 25, true);
+		FPSAnimator animator = new FPSAnimator(canvas, 25, true);
 		animator.start();
+		
 	}
 
 	@Override
 	public void display(GLAutoDrawable drawable)
 	{
+
+		
 		object_angle += 1.0f;
 		// Recuperons notre objet OpenGL
 		GL2 gl = drawable.getGL().getGL2();
@@ -100,119 +111,101 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
+		float distance = 200f;
+		
 		// SUN
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);
-		gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);//ROTATION POUR METTRE LE SOLEIL "DROIT"
-		gl.glRotatef(object_angle, 0, 0, 1); // ROTATION SUR SOI MEME
-		gl.glCallList(sunID);
+		displaySun(gl, distance);
 		
-		// MERCURY
-		gl.glLoadIdentity();
-		gl.glRotatef((float)4.7*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, 20, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-		gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-		gl.glCallList(mercuryID);
-		
-		// VENUS
-		gl.glLoadIdentity();
-		gl.glRotatef((float)3.5*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, 30, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-		gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-		gl.glCallList(venusID);
-		
-		// EARTH
-		gl.glLoadIdentity();
-		gl.glRotatef((float)2.9*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, 40, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-		gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-		gl.glCallList(earthID);
-		
-		// MOON
-		gl.glLoadIdentity();
-		gl.glRotatef((float)2.9*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, 40, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glRotatef(object_angle, 0, 0, 1);//ROTATION DE LA LUNE AUTOUR DE LA TERRE
-		gl.glTranslatef(0, 5, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);
-		gl.glCallList(moonID);
+/*
+		displayPlanet(gl,distance,20,4.7f,mercuryID, false,0);				// MERCURY
+		displayPlanet(gl,distance,30,3.5f,venusID, false,0);				// VENUS
+		displayPlanet(gl,distance,40,2.9f,earthID, false,0);				// EARTH
+		displaySatellite(gl,distance,40,5f,2.9f,moonID);					// Moon
+		displayPlanet(gl,distance,50,2.4f,marsID, false,0);					// MARS
+		displayPlanet(gl,distance,60,1.3f,jupiterID, false,0);				// JUPITER
+		displayPlanet(gl,distance,70,0.9f,saturnID, true,saturnRingID);		// SATURN
+		displayPlanet(gl,distance,80,0.6f,uranusID, true,uranusRingID);		// URANUS
+		displayPlanet(gl,distance,90,0.5f,neptuneID, true,neptuneRingID);	// NEPTUNE
+*/		
+		displayPlanet(gl, distance, distanceFactor*57, 4.7f, mercuryID, false, 0);				// MERCURY
+		displayPlanet(gl, distance, distanceFactor*108, 3.5f, venusID, false, 0);				// VENUS
+		displayPlanet(gl, distance, distanceFactor*149, 2.9f, earthID, false, 0);				// EARTH
+		displaySatellite(gl, distance, distanceFactor* 149,5f, 2.9f, moonID);					// Moon
+		displayPlanet(gl, distance, distanceFactor*227, 2.4f, marsID, false, 0);					// MARS
+		displayPlanet(gl, distance, distanceFactor*778, 1.3f, jupiterID, false, 0);				// JUPITER
+		displayPlanet(gl, distance, distanceFactor*1429, 0.9f, saturnID, true, saturnRingID);		// SATURN
+		displayPlanet(gl, distance, distanceFactor*2871, 0.6f, uranusID, true, uranusRingID);		// URANUS
+		displayPlanet(gl, distance, distanceFactor*4498, 0.5f, neptuneID, true, neptuneRingID);	// NEPTUNE
 		
 		
-		// MARS
-		gl.glLoadIdentity();
-		gl.glRotatef((float)2.4*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, 50, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-		gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-		gl.glCallList(marsID);
-		
-		// JUPITER
-		gl.glLoadIdentity();
-		gl.glRotatef((float)1.3*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, 60, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-		gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-		gl.glCallList(jupiterID);
-		
-		// SATURN
-		gl.glLoadIdentity();
-		gl.glRotatef((float)0.9*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, 70, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-		gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-		gl.glCallList(saturnID);
-		// SATURN RINGS
-				gl.glLoadIdentity();
-				gl.glRotatef((float)0.9*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-				gl.glTranslatef(0, 70, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-				gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-				gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-				gl.glCallList(saturnRingID);
-				
-		// URANUS
-		gl.glLoadIdentity();
-		gl.glRotatef((float)0.6*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, 80, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-		gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-		gl.glCallList(uranusID);
-		// SATURN RINGS
-				gl.glLoadIdentity();
-				gl.glRotatef((float)0.6*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-				gl.glTranslatef(0, 80, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-				gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-				gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-				gl.glCallList(uranusRingID);
-		
-		// NEPTUNE
-		gl.glLoadIdentity();
-		gl.glRotatef((float)0.5*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, 90, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-		gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-		gl.glCallList(neptuneID);
-		// NEPTUNE RINGS
-				gl.glLoadIdentity();
-				gl.glRotatef((float)0.5*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-				gl.glTranslatef(0, 90, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
-				gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
-				gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
-				gl.glCallList(neptuneRingID);
-		
+		float distanceToCenter = 40;
+		float speed = 0;
+		float angle = 0;
+		for(int i = 0; i<nbAsteroids ;i++){
+			distanceToCenter = random(distanceFactor*400f, distanceFactor*500f);
+			speed = random(0.5f, 1f);
+			//angle = random(0.0f, 360.0f);
+			//gl.glRotatef(angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+			displayAsteroid(gl, 200f, distanceToCenter, speed, asteroidIDs.get(i));
+		}
+
 		
 		
 
 		gl.glFlush();
 
 		gl.glLoadIdentity();
-		float[] specularColor =
-		{ 1.0f, 1.0f, 1.0f, 0.0f };
+		float[] specularColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, specularColor, 0);
 
 	}
 
+	private void displaySun(GL2 gl, float distance){
+		gl.glTranslatef(0.0f, 0.0f, -distance);
+		gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);//ROTATION POUR METTRE LE SOLEIL "DROIT"
+		gl.glRotatef(moveSpeed*object_angle, 0, 0, 1); // ROTATION SUR SOI MEME
+		gl.glCallList(sunID);
+	}
+	
+	private void displayPlanet(GL2 gl, float distance, float distanceToSun, float speed, int ID, boolean rings, int ringID){
+		gl.glLoadIdentity();
+		gl.glRotatef((float)moveSpeed*speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+		gl.glTranslatef(0, distanceToSun, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0.0f, 0.0f, -distance);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
+		//gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
+		gl.glCallList(ID);
+		if (rings){
+			displayRings(gl, distance, distanceToSun, speed, ringID);
+		}
+	}
+	
+	private void displayRings(GL2 gl, float distance, float distanceToSun, float speed, int ID){
+		gl.glLoadIdentity();
+		gl.glRotatef((float)moveSpeed*speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+		gl.glTranslatef(0, distanceToSun, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0.0f, 0.0f, -distance);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
+		//gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
+		gl.glCallList(ID);
+	}
+	
+	private void displaySatellite(GL2 gl, float distance, float distanceToSun, float distanceToPlanet, float speed, int ID){
+		gl.glLoadIdentity();
+		gl.glRotatef((float)moveSpeed*speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+		gl.glTranslatef(0, distanceToSun, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glRotatef(moveSpeed*object_angle, 0, 0, 1);//ROTATION DE LA LUNE AUTOUR DE LA TERRE
+		gl.glTranslatef(0, distanceToPlanet, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0.0f, 0.0f, -distance);
+		gl.glCallList(ID);
+	}
+	
+	private void displayAsteroid(GL2 gl, float distance, float distanceToCenter, float speed, int ID){
+		gl.glLoadIdentity();
+		gl.glRotatef((float)speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+		gl.glTranslatef(0, distanceToCenter, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0.0f, 0.0f, -distance);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
+		gl.glCallList(ID);
+	}
+	
 	@Override
 	public void dispose(GLAutoDrawable arg0)
 	{
@@ -231,29 +224,34 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glEnable(GL2.GL_LIGHT0);
 		gl.glEnable(GL2.GL_RESCALE_NORMAL);
 		gl.glEnable(GL2.GL_DEPTH_TEST);
-		gl.glEnable(GL2.GL_TEXTURE_2D);
+		gl.glEnable(GL2.GL_TEXTURE_2D);		
 		gl.glDepthFunc(GL2.GL_LEQUAL);
 		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 
-		sunID = planet(gl,"SunMap.jpg",zoomFactor*5f); // Sun
-		mercuryID = planet(gl,"MercuryMap.jpg",zoomFactor*1f); // Mercury
-		venusID =  planet(gl,"VenusMap.jpg",zoomFactor*1.5f); // Venus
-		earthID = planet(gl,"EarthMap.jpg",zoomFactor*1.5f); // Earth
+		sunID = planet(gl,"SunMap.jpg",sizeFactor*5f); // Sun
+		mercuryID = planet(gl,"MercuryMap.jpg",sizeFactor*1f); // Mercury
+		venusID =  planet(gl,"VenusMap.jpg",sizeFactor*1.5f); // Venus
+		earthID = planet(gl,"EarthMap.jpg",sizeFactor*1.5f); // Earth
 		
-		moonID = planet(gl,"MoonMap.jpg",zoomFactor*0.7f); // Moon
+		moonID = planet(gl,"MoonMap.jpg",sizeFactor*0.7f); // Moon
 		
-		marsID = planet(gl,"MarsMap.jpg",zoomFactor*1.3f); // Mars
-		jupiterID = planet(gl, "JupiterMap.jpg",zoomFactor*2.3f);// Jupiter
+		marsID = planet(gl,"MarsMap.jpg",sizeFactor*1.3f); // Mars
+		jupiterID = planet(gl, "JupiterMap.jpg",sizeFactor*2.3f);// Jupiter
 		
-		saturnID = planet(gl,"SaturnMap.jpg",zoomFactor*2.1f); // Saturn
-		saturnRingID = rings(gl,"SaturnRing.png",zoomFactor*2.1f*2); // Saturn Rings
+		saturnID = planet(gl,"SaturnMap.jpg",sizeFactor*2.1f); // Saturn
+		saturnRingID = rings(gl,"SaturnRing.png",sizeFactor*2.1f*2); // Saturn Rings
 		
-		uranusID = planet(gl,"UranusMap.jpg",zoomFactor*1.8f); // Uranus
-		uranusRingID = rings(gl,"UranusRing.png",zoomFactor*2.1f*2); // Uranus Rings
+		uranusID = planet(gl,"UranusMap.jpg",sizeFactor*1.8f); // Uranus
+		uranusRingID = rings(gl,"UranusRing.png",sizeFactor*2.1f*2); // Uranus Rings
 		
-		neptuneID = planet(gl,"NeptuneMap.jpg",zoomFactor*1.75f); // Neptune
-		neptuneRingID = rings(gl,"NeptuneRing.png",zoomFactor*2.1f*2); // Neptune Rings
+		neptuneID = planet(gl,"NeptuneMap.jpg",sizeFactor*1.75f); // Neptune
+		neptuneRingID = rings(gl,"NeptuneRing.png",sizeFactor*2.1f*2); // Neptune Rings
 		
+		float size=0;
+		for(int i=0; i < nbAsteroids ;i++){
+			size = random(0.2f, 0.4f);
+			asteroidIDs.add(planet(gl,"MoonMap.jpg",size)); // Saturn
+		}
 		
 	}
 
@@ -293,6 +291,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 			glu.gluQuadricDrawStyle(ring, GLU.GLU_FILL);
 			glu.gluQuadricTexture(ring, true);
 			glu.gluQuadricNormals(ring, GLU.GLU_SMOOTH);
+			glu.gluQuadricOrientation(ring, GLU.GLU_OUTSIDE);
 
 			int ringID = gl.glGenLists(1);
 			gl.glNewList(ringID, GL2.GL_COMPILE);
@@ -311,6 +310,10 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		}
 	}
 
+	
+	
+	
+	
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height)
 	{
@@ -336,14 +339,26 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_LEFT:
-				POV_orientation -= POV_rotation_speed;
-				lx = (float) Math.sin(Math.toRadians(POV_orientation));
-				lz = (float) -Math.cos(Math.toRadians(POV_orientation));
+				if(e.isControlDown()){/*
+					POV_orientation -= POV_rotation_speed;
+					lx = (float) -Math.sin(Math.toRadians(POV_orientation));
+					lz = (float) Math.cos(Math.toRadians(POV_orientation));
+				*/}else{
+					POV_orientation -= POV_rotation_speed;
+					lx = (float) Math.sin(Math.toRadians(POV_orientation));
+					lz = (float) -Math.cos(Math.toRadians(POV_orientation));
+				}
 				break;
 			case KeyEvent.VK_RIGHT:
-				POV_orientation += POV_rotation_speed;
-				lx = (float) Math.sin(Math.toRadians(POV_orientation));
-				lz = (float) -Math.cos(Math.toRadians(POV_orientation));
+				if(e.isControlDown()){/*
+					POV_orientation += POV_rotation_speed;
+					lx = (float) -Math.sin(Math.toRadians(POV_orientation));
+					lz = (float) Math.cos(Math.toRadians(POV_orientation));
+				*/}else{
+					POV_orientation += POV_rotation_speed;
+					lx = (float) Math.sin(Math.toRadians(POV_orientation));
+					lz = (float) -Math.cos(Math.toRadians(POV_orientation));
+				}
 				break;
 			case KeyEvent.VK_UP:
 				eyeX += lx * POV_speed;
@@ -360,6 +375,12 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 				lx = 0;
 				lz = -1;
 				break;
+			case KeyEvent.VK_PLUS:
+				moveSpeed += 10;
+				break;
+			case KeyEvent.VK_MINUS:
+				moveSpeed -= 10;
+				break;
 			default:
 				break;
 		}
@@ -370,6 +391,14 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	{
 		// TODO Auto-generated method stub
 
+	}
+	
+	public float random(float min, float max) {
+		Random random = new Random();
+		double range = max - min;
+		double scaled = random.nextDouble() * range;
+		double shifted = scaled + min;
+		return (float)shifted; // == (rand.nextDouble() * (max-min)) + min;
 	}
 
 }

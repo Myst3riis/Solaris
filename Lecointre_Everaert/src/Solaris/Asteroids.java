@@ -4,6 +4,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -19,7 +22,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 
-public class Saturn extends JFrame implements GLEventListener, KeyListener
+public class Asteroids extends JFrame implements GLEventListener, KeyListener
 {
 
 	/**
@@ -46,12 +49,12 @@ public class Saturn extends JFrame implements GLEventListener, KeyListener
 
 	
 	
-	private int saturnID;
-	private int saturnRingID;
+	//private int asteroidID;
+	private List<Integer> asteroidIDs = new ArrayList<Integer>();
 	
-	public Saturn(int width, int height)
+	public Asteroids(int width, int height)
 	{
-		super("Saturn");
+		super("Asteroids");
 		GLProfile profil = GLProfile.get(GLProfile.GL2);
 		GLCapabilities capabilities = new GLCapabilities(profil);
 
@@ -91,24 +94,22 @@ public class Saturn extends JFrame implements GLEventListener, KeyListener
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
-		// SATURN
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);
-		gl.glRotatef(-45.0f, 1.0f, 0.0f, 0.0f);//ROTATION POUR METTRE LE SOLEIL "DROIT"
-		gl.glRotatef(object_angle, 0, 1, 1); // ROTATION SUR SOI MEME
-		gl.glCallList(saturnID);
 		
-		//SATURN RINGS
-		gl.glLoadIdentity();
-		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);
-		gl.glRotatef(-45.0f, 1.0f, 0.0f, 0.0f);//ROTATION POUR METTRE LE SOLEIL "DROIT"
-		gl.glRotatef(object_angle, 0, 1, 1); // ROTATION SUR SOI MEME
-		gl.glCallList(saturnRingID);
+		float distanceToCenter = 40;
+		float speed = 0;
+		//float angle = 0;
+		for(int i = 0; i<300 ;i++){
+			distanceToCenter = random(40.0f, 45.0f);
+			speed = random(0.5f, 1.0f);
+			//angle = random(0.0f, 360.0f);
+			//gl.glRotatef(angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+			displayAsteroid(gl, 200f, distanceToCenter, speed, asteroidIDs.get(i));
+		}
 
 		gl.glFlush();
 
 		gl.glLoadIdentity();
-		float[] specularColor =
-		{ 1.0f, 1.0f, 1.0f, 0.0f };
+		float[] specularColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, specularColor, 0);
 
 	}
@@ -135,12 +136,25 @@ public class Saturn extends JFrame implements GLEventListener, KeyListener
 		gl.glDepthFunc(GL2.GL_LEQUAL);
 		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 
-		
-		saturnID = planet(gl,"SaturnMap.jpg",zoomFactor*2.1f); // Saturn
-		saturnRingID = ring(gl,"SaturnRing.png",zoomFactor*2.1f*2);//
+		float size=0;
+		for(int i =0; i < 300;i++){
+			size = random(0.2f, 0.4f);
+			asteroidIDs.add(planet(gl,"MoonMap.jpg",zoomFactor*size)); // Saturn
+		}
 		
 		
 	}
+	
+	
+	private void displayAsteroid(GL2 gl, float distance, float distanceToCenter, float speed, int ID){
+		gl.glLoadIdentity();
+		System.out.println(speed);
+		gl.glRotatef((float)speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+		gl.glTranslatef(0, distanceToCenter, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0.0f, 0.0f, -distance);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
+		gl.glCallList(ID);
+	}
+	
 
 	private int planet(GL2 gl, String texture, float size)
 	{
@@ -255,6 +269,15 @@ public class Saturn extends JFrame implements GLEventListener, KeyListener
 	{
 		// TODO Auto-generated method stub
 
+	}
+	
+	
+	public float random(float min, float max) {
+		Random random = new Random();
+		double range = max - min;
+		double scaled = random.nextDouble() * range;
+		double shifted = scaled + min;
+		return (float)shifted; // == (rand.nextDouble() * (max-min)) + min;
 	}
 
 }
