@@ -52,12 +52,15 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	private int marsID;
 	private int jupiterID;
 	private int saturnID;
+	private int saturnRingID;
 	private int uranusID;
+	private int uranusRingID;
 	private int neptuneID;
+	private int neptuneRingID;
 	
 	public Solaris(int width, int height)
 	{
-		super("Mon premier monde !");
+		super("Solar System");
 		GLProfile profil = GLProfile.get(GLProfile.GL2);
 		GLCapabilities capabilities = new GLCapabilities(profil);
 
@@ -76,7 +79,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		canvas.requestFocusInWindow();
 
 		// Creation et instanciation du FPSAnimator
-		final FPSAnimator animator = new FPSAnimator(canvas, 40, true);
+		final FPSAnimator animator = new FPSAnimator(canvas, 25, true);
 		animator.start();
 	}
 
@@ -106,70 +109,97 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		// MERCURY
 		gl.glLoadIdentity();
 		gl.glRotatef((float)4.7*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glRotatef(-zoomFactor*5f, 0, 1, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0, 20, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(mercuryID);
+		
 		// VENUS
 		gl.glLoadIdentity();
 		gl.glRotatef((float)3.5*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glRotatef(-zoomFactor*10f, 0, 1, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0, 30, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(venusID);
+		
 		// EARTH
 		gl.glLoadIdentity();
 		gl.glRotatef((float)2.9*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glRotatef(-zoomFactor*15f, 0, 1, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0, 40, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(earthID);
-		/*
+		
 		// MOON
 		gl.glLoadIdentity();
-		gl.glRotatef(object_angle, 0, 0, 1);
-		gl.glRotatef(-15.f, 0, 1, 0);
-		gl.glTranslatef(0.0f, 0.0f, -15.0f);
-
-		gl.glRotatef(object_angle, 1, 1, 1);
+		gl.glRotatef((float)2.9*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+		gl.glTranslatef(0, 40, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glRotatef(object_angle, 0, 0, 1);//ROTATION DE LA LUNE AUTOUR DE LA TERRE
+		gl.glTranslatef(0, 5, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);
 		gl.glCallList(moonID);
-		 */
+		
 		
 		// MARS
 		gl.glLoadIdentity();
 		gl.glRotatef((float)2.4*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glRotatef(-zoomFactor*20f, 0, 1, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0, 50, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(marsID);
+		
 		// JUPITER
 		gl.glLoadIdentity();
 		gl.glRotatef((float)1.3*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glRotatef(-zoomFactor*25f, 0, 1, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0, 60, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(jupiterID);
+		
 		// SATURN
 		gl.glLoadIdentity();
 		gl.glRotatef((float)0.9*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glRotatef(-zoomFactor*30f, 0, 1, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0, 70, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(saturnID);
+		// SATURN RINGS
+				gl.glLoadIdentity();
+				gl.glRotatef((float)0.9*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+				gl.glTranslatef(0, 70, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+				gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
+				gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
+				gl.glCallList(saturnRingID);
+				
 		// URANUS
 		gl.glLoadIdentity();
 		gl.glRotatef((float)0.6*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glRotatef(-zoomFactor*35f, 0, 1, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0, 80, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(uranusID);
+		// SATURN RINGS
+				gl.glLoadIdentity();
+				gl.glRotatef((float)0.6*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+				gl.glTranslatef(0, 80, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+				gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
+				gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
+				gl.glCallList(uranusRingID);
+		
 		// NEPTUNE
 		gl.glLoadIdentity();
 		gl.glRotatef((float)0.5*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glRotatef(-zoomFactor*40f, 0, 1, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+		gl.glTranslatef(0, 90, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
 		gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 		gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 		gl.glCallList(neptuneID);
+		// NEPTUNE RINGS
+				gl.glLoadIdentity();
+				gl.glRotatef((float)0.5*zoomFactor*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
+				gl.glTranslatef(0, 90, 0);//ANGLE ENTRE LA VUE DE DEPART ET LE SOLEIL (DISTANCE AU SOLEIL)
+				gl.glTranslatef(0.0f, 0.0f, -zoomFactor*100.0f);//SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
+				gl.glRotatef(zoomFactor*object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
+				gl.glCallList(neptuneRingID);
 		
 		
 		
@@ -214,9 +244,15 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		
 		marsID = planet(gl,"MarsMap.jpg",zoomFactor*1.3f); // Mars
 		jupiterID = planet(gl, "JupiterMap.jpg",zoomFactor*2.3f);// Jupiter
+		
 		saturnID = planet(gl,"SaturnMap.jpg",zoomFactor*2.1f); // Saturn
+		saturnRingID = rings(gl,"SaturnRing.png",zoomFactor*2.1f*2); // Saturn Rings
+		
 		uranusID = planet(gl,"UranusMap.jpg",zoomFactor*1.8f); // Uranus
+		uranusRingID = rings(gl,"UranusRing.png",zoomFactor*2.1f*2); // Uranus Rings
+		
 		neptuneID = planet(gl,"NeptuneMap.jpg",zoomFactor*1.75f); // Neptune
+		neptuneRingID = rings(gl,"NeptuneRing.png",zoomFactor*2.1f*2); // Neptune Rings
 		
 		
 	}
@@ -240,6 +276,33 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 			gl.glEndList();
 			glu.gluDeleteQuadric(planet);
 			return planetID;
+		}
+		catch (IOException e)
+		{
+			javax.swing.JOptionPane.showMessageDialog(null, e);
+			return 0;
+		}
+	}
+	
+	private int rings(GL2 gl, String texture, float size)
+	{
+		try
+		{
+			Texture tex = TextureIO.newTexture(new File("data/"+texture), true);
+			GLUquadric ring = glu.gluNewQuadric();
+			glu.gluQuadricDrawStyle(ring, GLU.GLU_FILL);
+			glu.gluQuadricTexture(ring, true);
+			glu.gluQuadricNormals(ring, GLU.GLU_SMOOTH);
+
+			int ringID = gl.glGenLists(1);
+			gl.glNewList(ringID, GL2.GL_COMPILE);
+
+			tex.bind(gl);
+			glu.gluDisk(ring, 0, size, 50, 50);
+
+			gl.glEndList();
+			glu.gluDeleteQuadric(ring);
+			return ringID;
 		}
 		catch (IOException e)
 		{
