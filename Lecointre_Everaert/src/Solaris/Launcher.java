@@ -7,7 +7,7 @@ public class Launcher {
 	 * @param args Parameters of the launcher
 	 */
 	public static void main(String[] args) {
-		Solaris solaris = new Solaris(1000, 1000);
+		SolarisOriginal solarisOriginal = new SolarisOriginal(1000, 1000);
 	}
 
 }
