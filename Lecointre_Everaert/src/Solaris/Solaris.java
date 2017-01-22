@@ -32,8 +32,8 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 
 	private float object_angle = 0.0f;
 	
-	private float sizeFactor = 1f;
-	private float distanceFactor = 0.1f;
+	private float sizeFactor = 0.5f;
+	private float distanceFactor = 0.4f;
 
 	private float eyeX = 0;
 	private float eyeY = 0;
@@ -130,7 +130,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		displayPlanet(gl, distance, distanceFactor*57, 4.7f, mercuryID, false, 0);				// MERCURY
 		displayPlanet(gl, distance, distanceFactor*108, 3.5f, venusID, false, 0);				// VENUS
 		displayPlanet(gl, distance, distanceFactor*149, 2.9f, earthID, false, 0);				// EARTH
-		displaySatellite(gl, distance, distanceFactor* 149,5f, 2.9f, moonID);					// Moon
+		displaySatellite(gl, distance, distanceFactor*149,distanceFactor*5f, 2.9f, moonID);					// Moon
 		displayPlanet(gl, distance, distanceFactor*227, 2.4f, marsID, false, 0);					// MARS
 		displayPlanet(gl, distance, distanceFactor*778, 1.3f, jupiterID, false, 0);				// JUPITER
 		displayPlanet(gl, distance, distanceFactor*1429, 0.9f, saturnID, true, saturnRingID);		// SATURN
