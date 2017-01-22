@@ -24,11 +24,11 @@ public abstract class CSVReader {
 
     HashMap<String, CelestialObject> celestialObjects = new HashMap<String, CelestialObject>();
     
-    protected final String path = "info\\";
+    protected String path = "info/";
     protected final String cellSeperator = ";";
 
     public abstract void readCSV();
-
+    
     public CelestialObject getCelestialObject(String name) {
 	return celestialObjects.get(name);
     }
@@ -49,7 +49,7 @@ public abstract class CSVReader {
 	    while ((line = br.readLine()) != null) {
 		String satelliteData[] = line.split(";");
 		String name = satelliteData[0];
-		long radius = Math.abs(rand.nextLong()); // Bounds?
+		long radius = Math.abs(rand.nextLong()) % 2500000 + 5000; // Bounds?
 		long distanceToPlanet = Long.valueOf(satelliteData[1]) * 1000; // distance converted from kilometers into meters
 		long orbitalSpeed = (long) Math.sqrt(G * planetMass / distanceToPlanet); 
 		Satellite satellite = new Satellite(name, radius, distanceToPlanet, orbitalSpeed);

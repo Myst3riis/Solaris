@@ -145,12 +145,13 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		float mercurySpeed = coa.adaptOrbitalSpeed(mercury);
 		
 		
-		displayPlanet(gl, distance, distanceFactor*mercuryDistanceToSun, mercurySpeed, mercuryID, false, 0);				// MERCURY
+		displayPlanet(gl, distance, mercuryDistanceToSun, mercurySpeed, mercuryID, false, 0);				// MERCURY
 		
 		////////////////////////////////////////////////////////////////
 		float distanceToCenter = 40;
 		float speed = 0;
 		float angle = 0;
+		/*
 		for(int i = 0; i<nbAsteroids ;i++){
 			distanceToCenter = random(distanceFactor*400f, distanceFactor*500f);
 			speed = random(0.5f, 1f);
@@ -158,7 +159,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 			//gl.glRotatef(angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
 			displayAsteroid(gl, 200f, distanceToCenter, speed, asteroidIDs.get(i));
 		}
-
+		*/
 		
 		
 
@@ -257,11 +258,13 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		neptuneID = planet(gl,"NeptuneMap.jpg",sizeFactor*1.75f); // Neptune
 		neptuneRingID = rings(gl,"NeptuneRing.png",sizeFactor*2.1f*2); // Neptune Rings
 		
+		/*
 		float size=0;
 		for(int i=0; i < nbAsteroids ;i++){
 			size = random(0.2f, 0.4f);
 			asteroidIDs.add(planet(gl,"MoonMap.jpg",size)); // Saturn
 		}
+		*/
 		
 	}
 
