@@ -40,7 +40,7 @@ public abstract class CSVReader {
      * @author Lecointre
      */
     public void readSatellites(String fullPath, long planetMass) {
-	final double G = 6.67408 * Math.pow(10, -11); // Gravitational constant
+	final double G = 6.67408 * Math.pow(10, 0); // Gravitational constant
 	Random rand = new Random();
 	BufferedReader br;
 	try {
