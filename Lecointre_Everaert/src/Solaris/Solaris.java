@@ -262,7 +262,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glCallList(ID);*/
 		
 		
-		distanceToPlanet = 300f;
+		distanceToPlanet = 50f;
 		gl.glLoadIdentity();
 		gl.glRotatef((float)moveSpeed*planetSpeed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
 		gl.glTranslatef(0, distanceToSun, 0);//DISTANCE AU SOLEIL
@@ -331,38 +331,38 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		float sssss = 250;
 		for(Iterator<String> it = earthSatellites.keySet().iterator(); it.hasNext();){
 			Satellite obj = (Satellite) earthSatellites.get(it.next());
-			//earthSatellitesIDs.add(satellite(gl,"MoonMap.jpg",obj.getRadius()));
-			earthSatellitesIDs.add(satellite(gl,"MoonMap.jpg",sssss));
+			earthSatellitesIDs.add(satellite(gl,"MoonMap.jpg",coa.adaptRadius(obj)));
+			//earthSatellitesIDs.add(satellite(gl,"MoonMap.jpg",sssss));
 		}
 		
 		for(Iterator<String> it = marsSatellites.keySet().iterator(); it.hasNext();){
 			Satellite obj = (Satellite) marsSatellites.get(it.next());
-			//marsSatellitesIDs.add(satellite(gl,obj.getRadius()));
-			marsSatellitesIDs.add(satellite(gl,sssss));
+			marsSatellitesIDs.add(satellite(gl,coa.adaptRadius(obj)));
+			//marsSatellitesIDs.add(satellite(gl,sssss));
 		}
 		
 		for(Iterator<String> it = jupiterSatellites.keySet().iterator(); it.hasNext();){
 			Satellite obj = (Satellite) jupiterSatellites.get(it.next());
-			//jupiterSatellitesIDs.add(satellite(gl,obj.getRadius()));
-			jupiterSatellitesIDs.add(satellite(gl,sssss));
+			jupiterSatellitesIDs.add(satellite(gl,coa.adaptRadius(obj)));
+			//jupiterSatellitesIDs.add(satellite(gl,sssss));
 		}
 		
 		for(Iterator<String> it = saturnSatellites.keySet().iterator(); it.hasNext();){
 			Satellite obj = (Satellite) saturnSatellites.get(it.next());
-			//saturnSatellitesIDs.add(satellite(gl,obj.getRadius()));
-			saturnSatellitesIDs.add(satellite(gl,sssss));
+			saturnSatellitesIDs.add(satellite(gl,coa.adaptRadius(obj)));
+			//saturnSatellitesIDs.add(satellite(gl,sssss));
 		}
 		
 		for(Iterator<String> it = uranusSatellites.keySet().iterator(); it.hasNext();){
 			Satellite obj = (Satellite) uranusSatellites.get(it.next());
-			//uranusSatellitesIDs.add(satellite(gl,obj.getRadius()));
-			uranusSatellitesIDs.add(satellite(gl,sssss));
+			uranusSatellitesIDs.add(satellite(gl,coa.adaptRadius(obj)));
+			//uranusSatellitesIDs.add(satellite(gl,sssss));
 		}
 		
 		for(Iterator<String> it = neptuneSatellites.keySet().iterator(); it.hasNext();){
 			Satellite obj = (Satellite) neptuneSatellites.get(it.next());
-			//neptuneSatellitesIDs.add(satellite(gl,obj.getRadius()));
-			neptuneSatellitesIDs.add(satellite(gl,"MoonMap.jpg",sssss));
+			neptuneSatellitesIDs.add(satellite(gl,coa.adaptRadius(obj)));
+			//neptuneSatellitesIDs.add(satellite(gl,"MoonMap.jpg",sssss));
 		}
 		
 		sun = (Sun) sunAndPlanets.get("Soleil");
