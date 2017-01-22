@@ -51,7 +51,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	private float lx = 0;
 	private float lz = -1;
 
-	private int moveSpeed = 1;
+	private int moveSpeed = 1; 
 	
 	private GLU glu = new GLU();
 
