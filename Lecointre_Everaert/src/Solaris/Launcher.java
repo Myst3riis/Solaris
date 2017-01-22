@@ -1,5 +1,7 @@
 package Solaris;
 
+import CSV.SolarSystem;
+
 public class Launcher {
 
 	/**

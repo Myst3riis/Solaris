@@ -136,6 +136,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		displayPlanet(gl, distance, distanceFactor*1429, 0.9f, saturnID, true, saturnRingID);		// SATURN
 		displayPlanet(gl, distance, distanceFactor*2871, 0.6f, uranusID, true, uranusRingID);		// URANUS
 		displayPlanet(gl, distance, distanceFactor*4498, 0.5f, neptuneID, true, neptuneRingID);	// NEPTUNE
+
 		
 		
 		float distanceToCenter = 40;
