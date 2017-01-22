@@ -13,7 +13,7 @@ import CelestialObjects.Satellite;
 public class CelestialObjectAdapter {
 
 	private int distanceResizeFactor = (int) Math.pow(10, 9);
-	private int speedFactor = 20000;
+	private float speedFactor = 10000;
 	private int radiusResizeFactor = 10000;
 
 	/**
