@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -22,6 +23,10 @@ import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 
+import CSV.SolarSystem;
+import CelestialObjects.CelestialObject;
+import CelestialObjects.Planet;
+
 public class Solaris extends JFrame implements GLEventListener, KeyListener
 {
 
@@ -33,7 +38,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	private float object_angle = 0.0f;
 	
 	private float sizeFactor = 0.5f;
-	private float distanceFactor = 0.4f;
+	private float distanceFactor = 0.0000001f;
 
 	private float eyeX = 0;
 	private float eyeY = 0;
@@ -116,29 +121,33 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		// SUN
 		displaySun(gl, distance);
 		
-/*
-		displayPlanet(gl,distance,20,4.7f,mercuryID, false,0);				// MERCURY
-		displayPlanet(gl,distance,30,3.5f,venusID, false,0);				// VENUS
-		displayPlanet(gl,distance,40,2.9f,earthID, false,0);				// EARTH
-		displaySatellite(gl,distance,40,5f,2.9f,moonID);					// Moon
-		displayPlanet(gl,distance,50,2.4f,marsID, false,0);					// MARS
-		displayPlanet(gl,distance,60,1.3f,jupiterID, false,0);				// JUPITER
-		displayPlanet(gl,distance,70,0.9f,saturnID, true,saturnRingID);		// SATURN
-		displayPlanet(gl,distance,80,0.6f,uranusID, true,uranusRingID);		// URANUS
-		displayPlanet(gl,distance,90,0.5f,neptuneID, true,neptuneRingID);	// NEPTUNE
-*/		
+/*		
 		displayPlanet(gl, distance, distanceFactor*57, 4.7f, mercuryID, false, 0);				// MERCURY
 		displayPlanet(gl, distance, distanceFactor*108, 3.5f, venusID, false, 0);				// VENUS
 		displayPlanet(gl, distance, distanceFactor*149, 2.9f, earthID, false, 0);				// EARTH
-		displaySatellite(gl, distance, distanceFactor*149,distanceFactor*5f, 2.9f, moonID);					// Moon
-		displayPlanet(gl, distance, distanceFactor*227, 2.4f, marsID, false, 0);					// MARS
+		displaySatellite(gl, distance, distanceFactor*149,distanceFactor*5f, 2.9f, moonID);		// Moon
+		displayPlanet(gl, distance, distanceFactor*227, 2.4f, marsID, false, 0);				// MARS
 		displayPlanet(gl, distance, distanceFactor*778, 1.3f, jupiterID, false, 0);				// JUPITER
-		displayPlanet(gl, distance, distanceFactor*1429, 0.9f, saturnID, true, saturnRingID);		// SATURN
-		displayPlanet(gl, distance, distanceFactor*2871, 0.6f, uranusID, true, uranusRingID);		// URANUS
+		displayPlanet(gl, distance, distanceFactor*1429, 0.9f, saturnID, true, saturnRingID);	// SATURN
+		displayPlanet(gl, distance, distanceFactor*2871, 0.6f, uranusID, true, uranusRingID);	// URANUS
 		displayPlanet(gl, distance, distanceFactor*4498, 0.5f, neptuneID, true, neptuneRingID);	// NEPTUNE
-
+*/
+		
+		//////////////////////////////////////////////////////////////////
+		CelestialObjectAdapter coa = new CelestialObjectAdapter();
 		
 		
+		SolarSystem ss = new SolarSystem();
+		HashMap<String, CelestialObject> sunAndPlanets = ss.sunAndPlanets();
+		
+		Planet mercury = (Planet) sunAndPlanets.get("Mercure");
+		float mercuryDistanceToSun = coa.adaptDistance(mercury);
+		float mercurySpeed = coa.adaptOrbitalSpeed(mercury);
+		
+		
+		displayPlanet(gl, distance, distanceFactor*mercuryDistanceToSun, mercurySpeed, mercuryID, false, 0);				// MERCURY
+		
+		////////////////////////////////////////////////////////////////
 		float distanceToCenter = 40;
 		float speed = 0;
 		float angle = 0;
