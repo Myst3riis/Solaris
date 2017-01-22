@@ -37,8 +37,8 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 
 	private float object_angle = 0.0f;
 	
-	private float sizeFactor = 0.5f;
-	private float distanceFactor = 0.0000001f;
+	private float sizeFactor = 1f;
+	private float distanceFactor = 0.1f;
 
 	private float eyeX = 0;
 	private float eyeY = 0;
@@ -121,7 +121,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		// SUN
 		displaySun(gl, distance);
 		
-/*		
+		
 		displayPlanet(gl, distance, distanceFactor*57, 4.7f, mercuryID, false, 0);				// MERCURY
 		displayPlanet(gl, distance, distanceFactor*108, 3.5f, venusID, false, 0);				// VENUS
 		displayPlanet(gl, distance, distanceFactor*149, 2.9f, earthID, false, 0);				// EARTH
@@ -131,11 +131,11 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		displayPlanet(gl, distance, distanceFactor*1429, 0.9f, saturnID, true, saturnRingID);	// SATURN
 		displayPlanet(gl, distance, distanceFactor*2871, 0.6f, uranusID, true, uranusRingID);	// URANUS
 		displayPlanet(gl, distance, distanceFactor*4498, 0.5f, neptuneID, true, neptuneRingID);	// NEPTUNE
-*/
+
 		
 		//////////////////////////////////////////////////////////////////
+		/*
 		CelestialObjectAdapter coa = new CelestialObjectAdapter();
-		
 		
 		SolarSystem ss = new SolarSystem();
 		HashMap<String, CelestialObject> sunAndPlanets = ss.sunAndPlanets();
@@ -146,7 +146,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		
 		
 		displayPlanet(gl, distance, distanceFactor*mercuryDistanceToSun, mercurySpeed, mercuryID, false, 0);				// MERCURY
-		
+		*/
 		////////////////////////////////////////////////////////////////
 		float distanceToCenter = 40;
 		float speed = 0;
@@ -238,7 +238,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glDepthFunc(GL2.GL_LEQUAL);
 		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 
-		sunID = planet(gl,"SunMap.jpg",sizeFactor*5f); // Sun
+		sunID = planet(gl,"SunMap.jpg",5f); // Sun
 		mercuryID = planet(gl,"MercuryMap.jpg",sizeFactor*1f); // Mercury
 		venusID =  planet(gl,"VenusMap.jpg",sizeFactor*1.5f); // Venus
 		earthID = planet(gl,"EarthMap.jpg",sizeFactor*1.5f); // Earth
