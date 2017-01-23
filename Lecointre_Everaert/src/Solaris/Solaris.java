@@ -98,7 +98,9 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	private List<Integer> marsSatellitesIDs    = new ArrayList<Integer>(); 
 	private List<Integer> saturnSatellitesIDs  = new ArrayList<Integer>(); 
 	private List<Integer> uranusSatellitesIDs  = new ArrayList<Integer>(); 
-	private List<Integer> neptuneSatellitesIDs = new ArrayList<Integer>(); 
+	private List<Integer> neptuneSatellitesIDs = new ArrayList<Integer>();
+
+	private int skyboxID; 
 	        
 	public Solaris(int width, int height)
 	{
@@ -150,8 +152,12 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 
 		float distance = 200f;
 		
+
+		// SKYBOX
+		displaySkybox(gl, distance,skyboxID);
+		
 		// SUN
-		displaySun(gl, distance);		
+		displaySun(gl, distance, sunID);		
 		////PLANETS
 		displayPlanet(gl, distance, distanceFactor*(coa.adaptDistance(mercury)+ coa.adaptRadius(sun)), moveSpeed*coa.adaptOrbitalSpeed(mercury), mercuryID, false, 0);				// MERCURY
 		displayPlanet(gl, distance, distanceFactor*(coa.adaptDistance(venus)  + coa.adaptRadius(sun)), moveSpeed*coa.adaptOrbitalSpeed(venus),   venusID,   false, 0);				// VENUS
@@ -226,13 +232,42 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 
 	}
 
-	private void displaySun(GL2 gl, float distance){
+	/**
+	 * 
+	 * @param gl
+	 * @param distance
+	 */
+	private void displaySkybox(GL2 gl, float distance, int ID){
+		gl.glLoadIdentity();
 		gl.glTranslatef(0.0f, 0.0f, -distance);
-		//gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);//ROTATION POUR METTRE LE SOLEIL "DROIT"
-		gl.glRotatef(moveSpeed*object_angle, 0, 0, 1); // ROTATION SUR SOI MEME
-		gl.glCallList(sunID);
+		gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);//ROTATION POUR METTRE LE SOLEIL "DROIT"
+		//gl.glRotatef(moveSpeed*object_angle, 0, 0, 1); // ROTATION SUR SOI MEME
+		gl.glCallList(ID);
 	}
 	
+	/**
+	 * 
+	 * @param gl
+	 * @param distance
+	 */
+	private void displaySun(GL2 gl, float distance, int ID){
+		gl.glLoadIdentity();
+		gl.glTranslatef(0.0f, 0.0f, -distance);
+		//gl.glRotatef(-90.0f, 0.0f, 0.0f, 0.0f);//ROTATION POUR METTRE LE SOLEIL "DROIT"
+		gl.glRotatef(moveSpeed*object_angle, 0, 0, 1); // ROTATION SUR SOI MEME
+		gl.glCallList(ID);
+	}
+	
+	/**
+	 * 
+	 * @param gl
+	 * @param distance
+	 * @param distanceToSun
+	 * @param speed
+	 * @param ID
+	 * @param rings
+	 * @param ringID
+	 */
 	private void displayPlanet(GL2 gl, float distance, float distanceToSun, float speed, int ID, boolean rings, int ringID){
 		gl.glLoadIdentity();
 		gl.glRotatef((float)moveSpeed*speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
@@ -243,6 +278,14 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		if (rings) displayRings(gl, distance, distanceToSun, speed, ringID);
 	}
 	
+	/**
+	 * 
+	 * @param gl
+	 * @param distance
+	 * @param distanceToSun
+	 * @param speed
+	 * @param ID
+	 */
 	private void displayRings(GL2 gl, float distance, float distanceToSun, float speed, int ID){
 		gl.glLoadIdentity();
 		gl.glRotatef((float)moveSpeed*speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
@@ -252,6 +295,16 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glCallList(ID);
 	}
 	
+	/**
+	 * 
+	 * @param gl
+	 * @param distance
+	 * @param distanceToSun
+	 * @param distanceToPlanet
+	 * @param planetSpeed
+	 * @param speed
+	 * @param ID
+	 */
 	private void displaySatellite(GL2 gl, float distance, float distanceToSun, float distanceToPlanet, float planetSpeed, float speed, int ID){
 		/*gl.glLoadIdentity();
 		gl.glRotatef((float)moveSpeed*speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
@@ -281,7 +334,14 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glCallList(ID);
 		 */
 	}
-	
+	/**
+	 * 
+	 * @param gl
+	 * @param distance
+	 * @param distanceToCenter
+	 * @param speed
+	 * @param ID
+	 */
 	private void displayAsteroid(GL2 gl, float distance, float distanceToCenter, float speed, int ID){
 		gl.glLoadIdentity();
 		gl.glRotatef((float)speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
@@ -307,7 +367,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		// Recuperons notre objet OpenGL
 		GL2 gl = drawable.getGL().getGL2();
 		// Fixons la couleur par defaut de glClear
-		gl.glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		gl.glEnable(GL2.GL_LIGHTING);
 		gl.glEnable(GL2.GL_LIGHT0);
 		gl.glEnable(GL2.GL_RESCALE_NORMAL);
@@ -390,6 +450,8 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		
 		neptuneID = planet(gl,"NeptuneMap.jpg",sizeFactor*coa.adaptRadius(neptune)); // Neptune
 		neptuneRingID = rings(gl,"NeptuneRing.png",sizeFactor*coa.adaptRadius(neptune)*2); // Neptune Rings
+		
+		skyboxID = skybox(gl,"skysphere.png",sizeFactor*1200000); // SKYBOX ?
 		
 		
 		float size=0;
@@ -566,6 +628,40 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		final float h = (float) width / (float) height;
 		gl.glViewport(0, 0, width, height);
 
+	}
+	/**
+	 * 
+	 * @param gl
+	 * @param texture
+	 * @param size
+	 * @return
+	 */
+	private int skybox(GL2 gl, String texture, float size)
+	{
+		try
+		{
+			Texture tex = TextureIO.newTexture(new File("data/"+texture), true);
+			GLUquadric planet = glu.gluNewQuadric();
+			glu.gluQuadricDrawStyle(planet, GLU.GLU_FILL);
+			glu.gluQuadricTexture(planet, true);
+			glu.gluQuadricNormals(planet, GLU.GLU_SMOOTH);
+			glu.gluQuadricOrientation(planet, GLU.GLU_INSIDE);
+
+			int planetID = gl.glGenLists(1);
+			gl.glNewList(planetID, GL2.GL_COMPILE);
+
+			tex.bind(gl);
+			glu.gluSphere(planet, size, 50, 50);
+
+			gl.glEndList();
+			glu.gluDeleteQuadric(planet);
+			return planetID;
+		}
+		catch (IOException e)
+		{
+			javax.swing.JOptionPane.showMessageDialog(null, e);
+			return 0;
+		}
 	}
 
 	@Override
