@@ -109,7 +109,7 @@ public class Saturn extends JFrame implements GLEventListener, KeyListener
 		gl.glLoadIdentity();
 		float[] specularColor =
 		{ 1.0f, 1.0f, 1.0f, 0.0f };
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, specularColor, 0);
+		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, specularColor, 0);
 
 	}
 
@@ -177,7 +177,7 @@ public class Saturn extends JFrame implements GLEventListener, KeyListener
 			glu.gluQuadricDrawStyle(planet, GLU.GLU_FILL);
 			glu.gluQuadricTexture(planet, true);
 			glu.gluQuadricNormals(planet, GLU.GLU_SMOOTH);
-			glu.gluQuadricOrientation(planet, GLU.GLU_INSIDE);
+			glu.gluQuadricOrientation(planet, GLU.GLU_OUTSIDE);
 
 			int planetID = gl.glGenLists(1);
 			gl.glNewList(planetID, GL2.GL_COMPILE);
