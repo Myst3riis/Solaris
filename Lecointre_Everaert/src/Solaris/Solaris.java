@@ -2,6 +2,11 @@ package Solaris;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +35,7 @@ import CelestialObjects.Planet;
 import CelestialObjects.Satellite;
 import CelestialObjects.Sun;
 
-public class Solaris extends JFrame implements GLEventListener, KeyListener {
+public class Solaris extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
 
     /**
      * Ground Control to Major Tom Ground Control to Major Tom Take your protein
@@ -102,6 +107,14 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 
     private int skyboxID;
 
+////////////
+	private float phi = 0;
+	private float theta = 0;
+	private float[] direction = new float[3];
+	private int m_x;
+	private int m_y;
+	private boolean move = false;
+//////////////
     /**
      * Creates the window
      * 
@@ -118,6 +131,9 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 	GLCanvas canvas = new GLCanvas(capabilities);
 	canvas.addGLEventListener(this);
 	canvas.addKeyListener(this);
+	canvas.addMouseListener(this);
+	canvas.addMouseMotionListener(this);
+	canvas.addMouseWheelListener(this);
 	canvas.setSize(width, height);
 
 	this.getContentPane().add(canvas);
@@ -136,7 +152,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
     }
 
     /**
-     * 
+     * @author Flavien Everaert - Thomas Lecointre
      */
     @Override
     public void display(GLAutoDrawable drawable) {
@@ -153,9 +169,9 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 	glu.gluPerspective(45.0f, 1, 1.0, 8000000000.0);
 	lx = (float) Math.sin(Math.toRadians(POV_orientation));
 	lz = (float) -Math.cos(Math.toRadians(POV_orientation));
-	glu.gluLookAt(eyeX, eyeY, eyeZ, eyeX + lx, 0.0f, eyeZ + lz, 0, 0, 1);
+	glu.gluLookAt(eyeX + direction[0], eyeY+ direction[1], eyeZ+ direction[2], eyeX + lx, 0.0f, eyeZ + lz, 0, 0, 1);
 	gl.glMatrixMode(GL2.GL_MODELVIEW);
-	gl.glLoadIdentity();
+	//gl.glLoadIdentity();
 
 	float distance = 200f;
 
@@ -186,7 +202,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 	//// ASTEROID BELT
 	float distanceToCenter = 40;
 	float speed = 0;
-	float angle = 0;
+	//float angle = 0;
 
 	for (int i = 0; i < nbAsteroids; i++) {
 	    float J = coa.adaptDistance(jupiter) + coa.adaptRadius(sun);
@@ -205,8 +221,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 	displaySatellites(gl, uranusSatellitesIDs, uranusSatellites, uranus, distance);
 	displaySatellites(gl, neptuneSatellitesIDs, neptuneSatellites, neptune, distance);
 
-	// displaySatellites(gl, plutoSatellitesIDs, plutoSatellites, pluto,
-	// distance);
+	// displaySatellites(gl, plutoSatellitesIDs, plutoSatellites, pluto, distance);
 	gl.glFlush();
 
 	gl.glLoadIdentity();
@@ -262,10 +277,8 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
     private void displaySkybox(GL2 gl, float distance, int ID) {
 	gl.glLoadIdentity();
 	gl.glTranslatef(0.0f, 0.0f, -distance);
-	gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);// ROTATION POUR METTRE LE SOLEIL
-					       // "DROIT"
-	// gl.glRotatef(moveSpeed*object_angle, 0, 0, 1); // ROTATION SUR SOI
-	// MEME
+	gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);// ROTATION POUR METTRE LE SOLEIL "DROIT"
+	gl.glRotatef((moveSpeed*object_angle)/100, 0, 0, 1); // ROTATION SUR SOI MEME
 	gl.glCallList(ID);
     }
 
@@ -281,10 +294,8 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
     private void displaySun(GL2 gl, float distance, int ID) {
 	gl.glLoadIdentity();
 	gl.glTranslatef(0.0f, 0.0f, -distance);
-	// gl.glRotatef(-90.0f, 0.0f, 0.0f, 0.0f);//ROTATION POUR METTRE LE
-	// SOLEIL "DROIT"
-	gl.glRotatef(moveSpeed * object_angle, 0, 0, 1); // ROTATION SUR SOI
-							 // MEME
+	// gl.glRotatef(-90.0f, 0.0f, 0.0f, 0.0f);//ROTATION POUR METTRE LE SOLEIL "DROIT"
+	gl.glRotatef(moveSpeed * object_angle, 0, 0, 1); // ROTATION SUR SOI MEME
 	gl.glCallList(ID);
     }
 
@@ -310,13 +321,9 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
     private void displayPlanet(GL2 gl, float distance, float distanceToSun, float speed, int ID, boolean rings,
 	    int ringID, float angle) {
 	gl.glLoadIdentity();
-	gl.glRotatef((float) moveSpeed * speed * object_angle, 0, 0, 1);// ROTATION
-									// AUTOUR
-									// DU
-									// SOLEIL
+	gl.glRotatef((float) moveSpeed * speed * object_angle, 0, 0, 1);// ROTATION AUTOUR DU SOLEIL
 	gl.glTranslatef(0, distanceToSun, 0);// DISTANCE AU SOLEIL
-	gl.glTranslatef(0.0f, 0.0f, -distance);// SE METTRE SUR LE MEME PLAN QUE
-					       // LE SOLEIL
+	gl.glTranslatef(0.0f, 0.0f, -distance);// SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 	// gl.glRotatef(object_angle, 1, 1, 1);// ROTATION SUR SOI MEME
 	gl.glCallList(ID);
 	if (rings)
@@ -340,51 +347,10 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
      */
     private void displayRings(GL2 gl, float distance, float distanceToSun, float speed, int ID, float angle) {
 	gl.glLoadIdentity();
-	gl.glRotatef((float) moveSpeed * speed * object_angle, 0, 0, 1);// ROTATION
-									// AUTOUR
-									// DU
-									// SOLEIL
+	gl.glRotatef((float) moveSpeed * speed * object_angle, 0, 0, 1);// ROTATION AUTOUR DU SOLEIL
 	gl.glTranslatef(0, distanceToSun, 0);// DISTANCE AU SOLEIL
-	gl.glTranslatef(0.0f, 0.0f, -distance);// SE METTRE SUR LE MEME PLAN QUE
-					       // LE SOLEIL
+	gl.glTranslatef(0.0f, 0.0f, -distance);// SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 	gl.glRotatef(angle, 0, 1, 0);// ROTATION SUR SOI MEME
-	gl.glCallList(ID);
-    }
-
-    /**
-     * Display satellite
-     * 
-     * @author Flavien Everaert
-     * @param gl
-     *            : GL2
-     * @param distance
-     *            : float - distance to origin
-     * @param distanceToSun
-     *            : float - distance to sun
-     * @param distanceToPlanet
-     *            : float - distance to planet
-     * @param planetSpeed
-     *            : float - planet speed
-     * @param speed
-     *            : float - satellite speed
-     * @param ID
-     *            : int - satellite ID
-     */
-    private void displaySatellite(GL2 gl, float distance, float distanceToSun, float distanceToPlanet,
-	    float planetSpeed, float speed, int ID) {
-	distanceToPlanet = 50f;
-	gl.glLoadIdentity();
-	gl.glRotatef((float) moveSpeed * planetSpeed * object_angle, 0, 0, 1);// ROTATION
-									      // AUTOUR
-									      // DU
-									      // SOLEIL
-	gl.glTranslatef(0, distanceToSun, 0);// DISTANCE AU SOLEIL
-	gl.glRotatef(moveSpeed * speed * object_angle, 0, 0, 1);// ROTATION DE
-								// LA LUNE
-								// AUTOUR DE LA
-								// TERRE
-	gl.glTranslatef(0, distanceToPlanet, 0);// DISTANCE A LA PLANETE
-	gl.glTranslatef(0.0f, 0.0f, -distance);
 	gl.glCallList(ID);
     }
 
@@ -405,11 +371,9 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
      */
     private void displayAsteroid(GL2 gl, float distance, float distanceToCenter, float speed, int ID) {
 	gl.glLoadIdentity();
-	gl.glRotatef((float) speed * object_angle, 0, 0, 1);// ROTATION AUTOUR
-							    // DU SOLEIL
+	gl.glRotatef((float) speed * object_angle, 0, 0, 1);// ROTATION AUTOUR DU SOLEIL
 	gl.glTranslatef(0, distanceToCenter, 0);// DISTANCE AU SOLEIL
-	gl.glTranslatef(0.0f, 0.0f, -distance);// SE METTRE SUR LE MEME PLAN QUE
-					       // LE SOLEIL
+	gl.glTranslatef(0.0f, 0.0f, -distance);// SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 	gl.glCallList(ID);
     }
 
@@ -429,7 +393,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
      */
 
     /**
-     * 
+     * @author Flavien Everaert
      */
     @Override
     public void init(GLAutoDrawable drawable) {
@@ -475,19 +439,15 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 	jupiterID = planet(gl, "JupiterMap.jpg", coa.adaptRadius(jupiter));// Jupiter
 
 	saturnID = planet(gl, "SaturnMap.jpg", coa.adaptRadius(saturn)); // Saturn
-	saturnRingID = rings(gl, "SaturnRing.png", coa.adaptRadius(saturn) * 2); // Saturn
-											      // Rings
+	saturnRingID = rings(gl, "SaturnRing.png", coa.adaptRadius(saturn) * 2); // Saturn Rings
 
 	uranusID = planet(gl, "UranusMap.jpg", coa.adaptRadius(uranus)); // Uranus
-	uranusRingID = rings(gl, "UranusRing.png", coa.adaptRadius(uranus) * 2); // Uranus
-											      // Rings
+	uranusRingID = rings(gl, "UranusRing.png", coa.adaptRadius(uranus) * 2); // Uranus Rings
 
-	neptuneID = planet(gl, "NeptuneMap.jpg", coa.adaptRadius(neptune)); // Neptune
-	neptuneRingID = rings(gl, "NeptuneRing.png", coa.adaptRadius(neptune) * 2); // Neptune
-												 // Rings
+	neptuneID = planet(gl, "NeptuneMap.jpg", coa.adaptRadius(neptune)); // Neptune Rings
 
 	skyboxID = skybox(gl, "skysphere.png", 1200000); // SKYBOX
-								      // ?
+	
 	earthSatellitesIDs = satellites(gl, "MoonMap.jpg", earthSatellites);
 	marsSatellitesIDs = satellites(gl, "MoonMap.jpg", marsSatellites);
 	jupiterSatellitesIDs = satellites(gl, "MoonMap.jpg", jupiterSatellites);
@@ -535,68 +495,6 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 	    gl.glEndList();
 	    glu.gluDeleteQuadric(planet);
 	    return planetID;
-	} catch (IOException e) {
-	    javax.swing.JOptionPane.showMessageDialog(null, e);
-	    return 0;
-	}
-    }
-
-    /**
-     * Creates a satellite
-     * 
-     * @author Flavien Everaert
-     * @param gl
-     *            : GL2
-     * @param size
-     *            : float - satellite size
-     * @return int - Sattelite ID
-     */
-    private int satellite(GL2 gl, float size) {
-	GLUquadric satellite = glu.gluNewQuadric();
-	glu.gluQuadricDrawStyle(satellite, GLU.GLU_FILL);
-	glu.gluQuadricNormals(satellite, GLU.GLU_SMOOTH);
-	glu.gluQuadricOrientation(satellite, GLU.GLU_OUTSIDE);
-
-	int satelliteID = gl.glGenLists(1);
-	gl.glNewList(satelliteID, GL2.GL_COMPILE);
-
-	glu.gluSphere(satellite, size, 50, 50);
-
-	gl.glEndList();
-	glu.gluDeleteQuadric(satellite);
-	return satelliteID;
-    }
-
-    /**
-     * Creates a satellite given the texture
-     * 
-     * @author Flavien Everaert
-     * @param gl
-     *            : GL2
-     * @param texture
-     *            : String - satellite texture
-     * @param size
-     *            : float - satellite size
-     * @return int - satellite ID
-     */
-    private int satellite(GL2 gl, String texture, float size) {
-	try {
-	    Texture tex = TextureIO.newTexture(new File("data/" + texture), true);
-	    GLUquadric satellite = glu.gluNewQuadric();
-	    glu.gluQuadricDrawStyle(satellite, GLU.GLU_FILL);
-	    glu.gluQuadricTexture(satellite, true);
-	    glu.gluQuadricNormals(satellite, GLU.GLU_SMOOTH);
-	    glu.gluQuadricOrientation(satellite, GLU.GLU_OUTSIDE);
-
-	    int satelliteID = gl.glGenLists(1);
-	    gl.glNewList(satelliteID, GL2.GL_COMPILE);
-
-	    tex.bind(gl);
-	    glu.gluSphere(satellite, size, 50, 50);
-
-	    gl.glEndList();
-	    glu.gluDeleteQuadric(satellite);
-	    return satelliteID;
 	} catch (IOException e) {
 	    javax.swing.JOptionPane.showMessageDialog(null, e);
 	    return 0;
@@ -693,7 +591,6 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 	int planetID = gl.glGenLists(1);
 	gl.glNewList(planetID, GL2.GL_COMPILE);
 
-	// tex.bind(gl);
 	glu.gluSphere(planet, size, 50, 50);
 
 	gl.glEndList();
@@ -768,50 +665,26 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 
 	switch (e.getKeyCode()) {
 	case KeyEvent.VK_LEFT:
-	    if (e.isControlDown()) {
-		/*
-		 * POV_orientation -= POV_rotation_speed; lx = (float)
-		 * -Math.sin(Math.toRadians(POV_orientation)); lz = (float)
-		 * Math.cos(Math.toRadians(POV_orientation));
-		 */} else {
-		POV_orientation -= POV_rotation_speed;
-		lx = (float) Math.sin(Math.toRadians(POV_orientation));
-		lz = (float) -Math.cos(Math.toRadians(POV_orientation));
-	    }
 	    break;
 	case KeyEvent.VK_RIGHT:
-	    if (e.isControlDown()) {
-		/*
-		 * POV_orientation += POV_rotation_speed; lx = (float)
-		 * -Math.sin(Math.toRadians(POV_orientation)); lz = (float)
-		 * Math.cos(Math.toRadians(POV_orientation));
-		 */} else {
+	    break;
+	case KeyEvent.VK_UP:
 		POV_orientation += POV_rotation_speed;
 		lx = (float) Math.sin(Math.toRadians(POV_orientation));
 		lz = (float) -Math.cos(Math.toRadians(POV_orientation));
-	    }
-	    break;
-	case KeyEvent.VK_UP:
-	    eyeX += lx * POV_speed;
-	    eyeZ += lz * POV_speed;
 	    break;
 	case KeyEvent.VK_DOWN:
-	    eyeX -= lx * POV_speed;
-	    eyeZ -= lz * POV_speed;
+		POV_orientation -= POV_rotation_speed;
+		lx = (float) Math.sin(Math.toRadians(POV_orientation));
+		lz = (float) -Math.cos(Math.toRadians(POV_orientation));
 	    break;
 	case KeyEvent.VK_BACK_SPACE:
-	    eyeX = -1555;// 0;
-	    eyeY = 0;// 0;
-	    eyeZ = 239;// 0;
+	    eyeX = -1555;
+	    eyeY = 0;
+	    eyeZ = 239;
 	    POV_orientation = 75;
 	    lx = 0;
 	    lz = -1;
-	    break;
-	case KeyEvent.VK_PLUS:
-	    //
-	    break;
-	case KeyEvent.VK_MINUS:
-	    //
 	    break;
 	default:
 	    break;
@@ -820,10 +693,71 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-	// TODO Auto-generated method stub
-
     }
+    
+    
+    
+    
+    @Override
+    public void mousePressed(MouseEvent e) {
+	m_x = e.getXOnScreen();
+	m_y = e.getYOnScreen();
+	move = true;
+	}
+    
+    @Override
+	public void mouseReleased(MouseEvent arg0) {
+	move = false;
+	}
+    
+	@Override
+	public void mouseDragged(MouseEvent e) {
+	if (move) {
+	    phi = m_x - e.getX();
+	    theta = m_y - e.getY();
+	    if(phi > 90) phi = 90;
+	    if(phi < -90) phi = -90;
+	    if(theta > 360) theta -= 360;
+	    if(theta < 0) theta += 360;
+	    direction[0] = (float) (Math.cos(Math.toRadians(phi)) * Math.sin(Math.toRadians(theta)));
+	    direction[1] = (float) Math.sin(Math.toRadians(phi));
+	    direction[2] = (float) (Math.cos(Math.toRadians(phi)) * Math.cos(Math.toRadians(theta)));
+	}
+	}
 
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+    
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+	}
+    
+	public void mouseWheelMoved(MouseWheelEvent e) {
+    if (e.getWheelRotation() < 0) {
+    	eyeX += lx * POV_speed;
+	    eyeZ += lz * POV_speed;
+    } else {
+    	eyeX -= lx * POV_speed;
+	    eyeZ -= lz * POV_speed;
+    }
+	}
+    
     /**
      * Returns a random float between min and max
      * 
@@ -841,5 +775,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener {
 	double shifted = scaled + min;
 	return (float) shifted;
     }
+
+
 
 }
