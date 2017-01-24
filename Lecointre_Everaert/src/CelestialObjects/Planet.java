@@ -18,7 +18,7 @@ public class Planet extends CelestialObject {
 	double ten = Double.parseDouble(massData[1]);
 	double exponent = Double.parseDouble(massData[2]);
 	this.mass = (long) (front * Math.pow(ten, exponent - 11)); // Take 11 off here and add it to the G constant exponent to bypass long.MAX_VALUE
-	System.out.println(this.mass);
+	//System.out.println(this.mass);
     }
 
     protected long distanceToSun; // m

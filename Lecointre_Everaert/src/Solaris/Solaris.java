@@ -34,8 +34,15 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 {
 
 	/**
-	 * 
+	 * Ground Control to Major Tom
+	 * Ground Control to Major Tom
+	 * Take your protein pills and put your helmet on
+	 * Ground Control to Major Tom (ten, nine, eight, seven, six)
+	 * Commencing countdown, engines on (five, four, three)
+	 * Check ignition and may God's love be with you (two, one, liftoff)
 	 */
+		
+	
 	private static final long serialVersionUID = 1L;
 
 	private float object_angle = 0.0f;
@@ -101,7 +108,21 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	private List<Integer> neptuneSatellitesIDs = new ArrayList<Integer>();
 
 	private int skyboxID; 
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	        
+	/**
+	 * Creates the window
+	 * @param width : int - width of window
+	 * @param height : int - height of window
+	 */
 	public Solaris(int width, int height)
 	{
 		super("Solar System");
@@ -127,15 +148,24 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		animator.start();
 		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 
 	 */
 	@Override
 	public void display(GLAutoDrawable drawable)
-	{
-
-		
-		object_angle += 1.0f;
+	{	object_angle += 1.0f;
 		sat_angle += 1.0f;
 		// Recuperons notre objet OpenGL
 		GL2 gl = drawable.getGL().getGL2();
@@ -231,14 +261,13 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glLoadIdentity();
 		float[] specularColor = { 1.0f, 1.0f, 1.0f, 0.0f };
 		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, specularColor, 0);
-
-		//System.out.println("\nX : "+eyeX+"\nY : "+eyeY+"\nZ : "+eyeZ+"\n POV_orientation : "+POV_orientation+"\n");
 	}
 
 	/**
-	 * 
-	 * @param gl
-	 * @param distance
+	 * Display skybox (sphere)
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param distance : float - distance to origin
 	 */
 	private void displaySkybox(GL2 gl, float distance, int ID){
 		gl.glLoadIdentity();
@@ -249,9 +278,10 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	}
 	
 	/**
-	 * 
-	 * @param gl
-	 * @param distance
+	 * Display sun
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param distance : float - distance to origin
 	 */
 	private void displaySun(GL2 gl, float distance, int ID){
 		gl.glLoadIdentity();
@@ -262,14 +292,15 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	}
 	
 	/**
-	 * 
-	 * @param gl
-	 * @param distance
-	 * @param distanceToSun
-	 * @param speed
-	 * @param ID
-	 * @param rings
-	 * @param ringID
+	 * Display planet
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param distance : float - distance to origin
+	 * @param distanceToSun : float - distance to sun
+	 * @param speed : float - planet speed
+	 * @param ID : int - planet ID
+	 * @param rings : boolean - does this planet have rings ?
+	 * @param ringID : int - rings ID (if rings there are)
 	 */
 	private void displayPlanet(GL2 gl, float distance, float distanceToSun, float speed, int ID, boolean rings, int ringID, float angle){
 		gl.glLoadIdentity();
@@ -282,12 +313,13 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	}
 	
 	/**
-	 * 
-	 * @param gl
-	 * @param distance
-	 * @param distanceToSun
-	 * @param speed
-	 * @param ID
+	 * Display rings
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param distance : float - distance to origin
+	 * @param distanceToSun : float - distance to sun
+	 * @param speed : float - speed of planet concerned by rings
+	 * @param ID : int - rings ID
 	 */
 	private void displayRings(GL2 gl, float distance, float distanceToSun, float speed, int ID, float angle){
 		gl.glLoadIdentity();
@@ -299,25 +331,17 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	}
 	
 	/**
-	 * 
-	 * @param gl
-	 * @param distance
-	 * @param distanceToSun
-	 * @param distanceToPlanet
-	 * @param planetSpeed
-	 * @param speed
-	 * @param ID
+	 * Display satellite
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param distance : float - distance to origin
+	 * @param distanceToSun : float - distance to sun
+	 * @param distanceToPlanet : float -  distance to planet
+	 * @param planetSpeed : float - planet speed
+	 * @param speed : float - satellite speed
+	 * @param ID : int - satellite ID 
 	 */
 	private void displaySatellite(GL2 gl, float distance, float distanceToSun, float distanceToPlanet, float planetSpeed, float speed, int ID){
-		/*gl.glLoadIdentity();
-		gl.glRotatef((float)moveSpeed*speed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, distanceToSun, 0);//DISTANCE AU SOLEIL
-		gl.glRotatef(moveSpeed*object_angle, 0, 0, 1);//ROTATION DE LA LUNE AUTOUR DE LA TERRE
-		gl.glTranslatef(0, distanceToPlanet, 0);//DISTANCE A LA PLANETE
-		gl.glTranslatef(0.0f, 0.0f, -distance);
-		gl.glCallList(ID);*/
-		
-		
 		distanceToPlanet = 50f;
 		gl.glLoadIdentity();
 		gl.glRotatef((float)moveSpeed*planetSpeed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
@@ -326,24 +350,15 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		gl.glTranslatef(0, distanceToPlanet, 0);//DISTANCE A LA PLANETE
 		gl.glTranslatef(0.0f, 0.0f, -distance);
 		gl.glCallList(ID);
-		/*
-		distanceToPlanet = 300f;
-		gl.glLoadIdentity();
-		//gl.glRotatef(moveSpeed*speed*sat_angle, 0, 0, 1);//ROTATION DE LA LUNE AUTOUR DE LA TERRE
-		gl.glTranslatef(0, distanceToPlanet, 0);//DISTANCE A LA PLANETE
-		gl.glRotatef((float)moveSpeed*planetSpeed*object_angle, 0, 0, 1);//ROTATION AUTOUR DU SOLEIL
-		gl.glTranslatef(0, distanceToSun, 0);//DISTANCE AU SOLEIL
-		gl.glTranslatef(0.0f, 0.0f, -distance);
-		gl.glCallList(ID);
-		 */
 	}
 	/**
-	 * 
-	 * @param gl
-	 * @param distance
-	 * @param distanceToCenter
-	 * @param speed
-	 * @param ID
+	 * Displays asteroid
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param distance : float - distance to origin
+	 * @param distanceToCenter : float - distance to Sun
+	 * @param speed : float - asteroid speed
+	 * @param ID : int - asteroid ID
 	 */
 	private void displayAsteroid(GL2 gl, float distance, float distanceToCenter, float speed, int ID){
 		gl.glLoadIdentity();
@@ -359,8 +374,24 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		// TODO Auto-generated method stub
 
 	}
-
 	
+	/**
+	 * This is Ground Control to Major Tom
+	 * You've really made the grade
+	 * And the papers want to know whose shirts you wear
+	 * Now it's time to leave the capsule if you dare
+	 * "This is Major Tom to Ground Control
+	 * I'm stepping through the door
+	 * And I'm floating in a most peculiar way
+	 * And the stars look very different today
+	 * For here
+	 * Am I sitting in a tin can
+	 * Far above the world
+	 * Planet Earth is blue
+	 * And there's nothing I can do
+	 */
+	
+
 	/**
 	 * 
 	 */
@@ -468,11 +499,12 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	}
 
 	/**
-	 * 
-	 * @param gl
-	 * @param texture
-	 * @param size
-	 * @return
+	 * Creates a planet
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param texture : String - planet texture
+	 * @param size : float - planet size
+	 * @return int - planet ID
 	 */
 	private int planet(GL2 gl, String texture, float size)
 	{
@@ -502,10 +534,11 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		}
 	}
 	/**
-	 * 
-	 * @param gl
-	 * @param size
-	 * @return
+	 * Creates a satellite
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param size : float - satellite size
+	 * @return int - Sattelite ID
 	 */
 	private int satellite(GL2 gl, float size)
 	{
@@ -525,11 +558,12 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	}
 	
 	/**
-	 * 
-	 * @param gl
-	 * @param texture
-	 * @param size
-	 * @return
+	 * Creates a satellite given the texture
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param texture : String - satellite texture
+	 * @param size : float - satellite size 
+	 * @return int - satellite ID
 	 */
 	private int satellite(GL2 gl, String texture, float size)
 	{
@@ -560,11 +594,12 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	}
 	
 	/**
-	 * 
-	 * @param gl
-	 * @param texture
-	 * @param size
-	 * @return
+	 * Creates rings
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param texture : String - rings texture
+	 * @param size : float - the "outside" size of the rigs 
+	 * @return int - the rings ID
 	 */
 	private int rings(GL2 gl, String texture, float size)
 	{
@@ -595,14 +630,14 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	}
 
 	/**
-	 * 
-	 * @param gl
-	 * @param size
-	 * @return
+	 * Creates an asteroid
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param size : size of the asteroid
+	 * @return int - the asteroid ID
 	 */
 	private int asteroid(GL2 gl, float size)
 	{
-		//Texture tex = TextureIO.newTexture(new File("data/"+texture), true);
 		GLUquadric planet = glu.gluNewQuadric();
 		glu.gluQuadricDrawStyle(planet, GLU.GLU_FILL);
 		glu.gluQuadricNormals(planet, GLU.GLU_SMOOTH);
@@ -621,11 +656,12 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	}
 	
 	/**
-	 * 
-	 * @param gl
-	 * @param texture
-	 * @param size
-	 * @return
+	 * Creates the skybox (giant sphere)
+	 * @author Flavien Everaert
+	 * @param gl : GL2
+	 * @param texture : String - texture to map to the sphere
+	 * @param size : float - size of the sphere
+	 * @return int - the sphere ID
 	 */
 	private int skybox(GL2 gl, String texture, float size)
 	{
@@ -666,6 +702,21 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 
 	}
 	
+	/**
+	 * Though I'm past one hundred thousand miles
+	 * I'm feeling very still
+	 * And I think my spaceship knows which way to go
+	 * Tell my wife I love her very much she knows
+	 * Ground Control to Major Tom
+	 * Your circuit's dead, there's something wrong
+	 * Can you hear me, Major Tom?
+	 * Can you hear me, Major Tom?
+	 * Can you hear me, Major Tom?
+	 * Can you "Here am I floating 'round my tin can
+	 * Far above the moon
+	 * Planet Earth is blue
+	 * And there's nothing I can do"
+	 */
 
 	@Override
 	public void keyTyped(KeyEvent e)
@@ -736,12 +787,34 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Returns a random float between min and max
+	 * @author Flavien Everaert
+	 * @param min : float - min limit for random
+	 * @param max : float - max limit for random
+	 * @return float - the random number
+	 */
 	public float random(float min, float max) {
 		Random random = new Random();
 		double range = max - min;
 		double scaled = random.nextDouble() * range;
 		double shifted = scaled + min;
-		return (float)shifted; // == (rand.nextDouble() * (max-min)) + min;
+		return (float)shifted;
 	}
 
 }
