@@ -110,14 +110,6 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 	private int skyboxID; 
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	        
 	/**
 	 * Creates the window
 	 * @param width : int - width of window
@@ -148,17 +140,6 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		animator.start();
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * 
@@ -786,21 +767,6 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener
 		// TODO Auto-generated method stub
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * Returns a random float between min and max
