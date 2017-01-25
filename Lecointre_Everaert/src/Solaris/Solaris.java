@@ -47,15 +47,11 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
     private static final long serialVersionUID = 1L;
 
     private float object_angle = 0.0f;
-    private float sat_angle = 0.0f;
 
     private float eyeX = -1555;// 0;
     private float eyeY = 0;// 0;
     private float eyeZ = 239;// 0;
-
-    private float POV_orientation = 75f;// 0;
     private float POV_speed = 10f;
-    private float POV_rotation_speed = 5f;
 
     private float lx = 0;
     private float lz = -1;
@@ -76,6 +72,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
     private int uranusRingID;
     private int neptuneID;
     private int neptuneRingID;
+    private int plutoID;
     private List<Integer> asteroidIDs = new ArrayList<Integer>();
     private int nbAsteroids = 200;
 
@@ -91,12 +88,14 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
     private Planet jupiter;
     private Planet uranus;
     private Planet neptune;
+    private Planet pluto;
     private HashMap<String, CelestialObject> earthSatellites;
     private HashMap<String, CelestialObject> jupiterSatellites;
     private HashMap<String, CelestialObject> marsSatellites;
     private HashMap<String, CelestialObject> saturnSatellites;
     private HashMap<String, CelestialObject> uranusSatellites;
     private HashMap<String, CelestialObject> neptuneSatellites;
+    private HashMap<String, CelestialObject> plutoSatellites;
 
     private int earthSatellitesIDs;
     private int jupiterSatellitesIDs;
@@ -104,6 +103,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
     private int saturnSatellitesIDs;
     private int uranusSatellitesIDs;
     private int neptuneSatellitesIDs;
+    private int plutoSatellitesIDs;
 
     private int skyboxID;
 
@@ -157,7 +157,6 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
     @Override
     public void display(GLAutoDrawable drawable) {
 	object_angle += 1.0f;
-	sat_angle += 1.0f;
 	// Recuperons notre objet OpenGL
 	GL2 gl = drawable.getGL().getGL2();
 	// On efface le buffer couleur (ce qu'on affiche) et le buffer de
@@ -167,9 +166,9 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
 	gl.glMatrixMode(GL2.GL_PROJECTION);
 	gl.glLoadIdentity();
 	glu.gluPerspective(45.0f, 1, 1.0, 8000000000.0);
-	lx = (float) Math.sin(Math.toRadians(POV_orientation));
-	lz = (float) -Math.cos(Math.toRadians(POV_orientation));
-	glu.gluLookAt(eyeX + direction[0], eyeY+ direction[1], eyeZ+ direction[2], eyeX + lx, 0.0f, eyeZ + lz, 0, 0, 1);
+	lx = 0.9659258f ;
+	lz = -0.25881904f ;
+	glu.gluLookAt(eyeX + direction[0], eyeY+ direction[1], eyeZ+ direction[2], eyeX + lx, eyeY, eyeZ + lz, 0, 0, 1);
 	gl.glMatrixMode(GL2.GL_MODELVIEW);
 	//gl.glLoadIdentity();
 
@@ -187,17 +186,19 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
 	displayPlanet(gl, distance, coa.adaptDistance(venus) + coa.adaptRadius(sun),
 		moveSpeed * coa.adaptOrbitalSpeed(venus), venusID, false, 0, 0); // VENUS
 	displayPlanet(gl, distance, coa.adaptDistance(earth) + coa.adaptRadius(sun),
-		moveSpeed * coa.adaptOrbitalSpeed(earth), earthID, false, 0, 0); // TERRE
+		moveSpeed * coa.adaptOrbitalSpeed(earth), earthID, false, 0, 0); // EARTH
 	displayPlanet(gl, distance, coa.adaptDistance(mars) + coa.adaptRadius(sun),
 		moveSpeed * coa.adaptOrbitalSpeed(mars), marsID, false, 0, 0); // MARS
 	displayPlanet(gl, distance, coa.adaptDistance(jupiter) + coa.adaptRadius(sun),
 		moveSpeed * coa.adaptOrbitalSpeed(jupiter), jupiterID, false, 0, 0); // JUPITER
 	displayPlanet(gl, distance, coa.adaptDistance(saturn) + coa.adaptRadius(sun),
-		moveSpeed * coa.adaptOrbitalSpeed(saturn), saturnID, true, saturnRingID, 5f); // SATURNE
+		moveSpeed * coa.adaptOrbitalSpeed(saturn), saturnID, true, saturnRingID, 5f); // SATURN
 	displayPlanet(gl, distance, coa.adaptDistance(uranus) + coa.adaptRadius(sun),
 		moveSpeed * coa.adaptOrbitalSpeed(uranus), uranusID, true, uranusRingID, 80f); // URANUS
 	displayPlanet(gl, distance, coa.adaptDistance(neptune) + coa.adaptRadius(sun),
 		moveSpeed * coa.adaptOrbitalSpeed(neptune), neptuneID, true, neptuneRingID, 5f); // NEPTUNE
+	displayPlanet(gl, distance, coa.adaptDistance(pluto) + coa.adaptRadius(sun),
+		moveSpeed * coa.adaptOrbitalSpeed(pluto), plutoID, false, 0, 0); // PLUTO
 
 	//// ASTEROID BELT
 	float distanceToCenter = 40;
@@ -213,20 +214,19 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
 	}
 
 	//// SATELLITES
-
 	displaySatellites(gl, earthSatellitesIDs, earthSatellites, earth, distance);
 	displaySatellites(gl, marsSatellitesIDs, earthSatellites, mars, distance);
 	displaySatellites(gl, jupiterSatellitesIDs, jupiterSatellites, jupiter, distance);
 	displaySatellites(gl, saturnSatellitesIDs, saturnSatellites, saturn, distance);
 	displaySatellites(gl, uranusSatellitesIDs, uranusSatellites, uranus, distance);
 	displaySatellites(gl, neptuneSatellitesIDs, neptuneSatellites, neptune, distance);
-
-	// displaySatellites(gl, plutoSatellitesIDs, plutoSatellites, pluto, distance);
+	displaySatellites(gl, plutoSatellitesIDs, plutoSatellites, pluto, distance);
+	
 	gl.glFlush();
 
 	gl.glLoadIdentity();
-	float[] specularColor = { 1.0f, 1.0f, 1.0f, 0.0f };
-	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, specularColor, 0);
+	float[] ambientColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, ambientColor, 0);
     }
 
     /**
@@ -371,7 +371,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
      */
     private void displayAsteroid(GL2 gl, float distance, float distanceToCenter, float speed, int ID) {
 	gl.glLoadIdentity();
-	gl.glRotatef((float) speed * object_angle, 0, 0, 1);// ROTATION AUTOUR DU SOLEIL
+	gl.glRotatef((float) moveSpeed * speed * object_angle, 0, 0, 1);// ROTATION AUTOUR DU SOLEIL
 	gl.glTranslatef(0, distanceToCenter, 0);// DISTANCE AU SOLEIL
 	gl.glTranslatef(0.0f, 0.0f, -distance);// SE METTRE SUR LE MEME PLAN QUE LE SOLEIL
 	gl.glCallList(ID);
@@ -420,6 +420,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
 	saturnSatellites = ss.saturnSatellites();
 	uranusSatellites = ss.uranusSatellites();
 	neptuneSatellites = ss.neptuneSatellites();
+	plutoSatellites = ss.plutoSatellites();
 
 	sun = (Sun) sunAndPlanets.get("Soleil");
 	mercury = (Planet) sunAndPlanets.get("Mercure");
@@ -430,6 +431,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
 	saturn = (Planet) sunAndPlanets.get("Saturne");
 	uranus = (Planet) sunAndPlanets.get("Uranus");
 	neptune = (Planet) sunAndPlanets.get("Neptune");
+	pluto = (Planet) sunAndPlanets.get("Pluton");
 
 	sunID = planet(gl, "SunMap.jpg", coa.adaptRadius(sun)); // Sun
 	mercuryID = planet(gl, "MercuryMap.jpg", coa.adaptRadius(mercury)); // Mercury
@@ -437,15 +439,14 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
 	earthID = planet(gl, "EarthMap.jpg", coa.adaptRadius(earth)); // Earth
 	marsID = planet(gl, "MarsMap.jpg", coa.adaptRadius(mars)); // Mars
 	jupiterID = planet(gl, "JupiterMap.jpg", coa.adaptRadius(jupiter));// Jupiter
-
 	saturnID = planet(gl, "SaturnMap.jpg", coa.adaptRadius(saturn)); // Saturn
 	saturnRingID = rings(gl, "SaturnRing.png", coa.adaptRadius(saturn) * 2); // Saturn Rings
-
 	uranusID = planet(gl, "UranusMap.jpg", coa.adaptRadius(uranus)); // Uranus
 	uranusRingID = rings(gl, "UranusRing.png", coa.adaptRadius(uranus) * 2); // Uranus Rings
-
-	neptuneID = planet(gl, "NeptuneMap.jpg", coa.adaptRadius(neptune)); // Neptune Rings
-
+	neptuneID = planet(gl, "NeptuneMap.jpg", coa.adaptRadius(neptune)); // Neptune
+	neptuneRingID = rings(gl, "NeptuneRing.png", coa.adaptRadius(neptune) * 2); // Neptune Rings
+	plutoID = planet(gl, "PlutoMap.jpg", coa.adaptRadius(pluto)); // Pluto
+	
 	skyboxID = skybox(gl, "skysphere.png", 1200000); // SKYBOX
 	
 	earthSatellitesIDs = satellites(gl, "MoonMap.jpg", earthSatellites);
@@ -454,7 +455,7 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
 	saturnSatellitesIDs = satellites(gl, "MoonMap.jpg", saturnSatellites);
 	uranusSatellitesIDs = satellites(gl, "MoonMap.jpg", uranusSatellites);
 	neptuneSatellitesIDs = satellites(gl, "MoonMap.jpg", neptuneSatellites);
-	// plutoSatellitesIDs = satellites(gl, "MoonMap.jpg", plutoSatellites);
+	plutoSatellitesIDs = satellites(gl, "MoonMap.jpg", plutoSatellites);
 
 	float size = 0;
 	for (int i = 0; i < nbAsteroids; i++) {
@@ -665,26 +666,30 @@ public class Solaris extends JFrame implements GLEventListener, KeyListener, Mou
 
 	switch (e.getKeyCode()) {
 	case KeyEvent.VK_LEFT:
+		eyeY -= 10f;
 	    break;
 	case KeyEvent.VK_RIGHT:
+		eyeY += 10f;
 	    break;
 	case KeyEvent.VK_UP:
-		POV_orientation += POV_rotation_speed;
-		lx = (float) Math.sin(Math.toRadians(POV_orientation));
-		lz = (float) -Math.cos(Math.toRadians(POV_orientation));
+	    eyeZ -= 10f;
 	    break;
 	case KeyEvent.VK_DOWN:
-		POV_orientation -= POV_rotation_speed;
-		lx = (float) Math.sin(Math.toRadians(POV_orientation));
-		lz = (float) -Math.cos(Math.toRadians(POV_orientation));
-	    break;
+		eyeZ +=10f;
+		
+		break;
 	case KeyEvent.VK_BACK_SPACE:
 	    eyeX = -1555;
 	    eyeY = 0;
 	    eyeZ = 239;
-	    POV_orientation = 75;
 	    lx = 0;
 	    lz = -1;
+	    break;
+	case KeyEvent.VK_SHIFT:
+	    moveSpeed += 1;
+	    break;
+	case KeyEvent.VK_CONTROL:
+	    if (moveSpeed > 0) moveSpeed -= 1;
 	    break;
 	default:
 	    break;
